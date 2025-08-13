@@ -27,5 +27,9 @@ For example:
 
 ### Considerations
 - Data is protien level so some of the cleaning steps may not be applicable
-- This is label-free (LFQ) data and processed using MaxQuant not proteome discoverer. Students should think about appropriate normalisation for LFQ and data missingness.
-- Note NAs have been encoded as zeros in this data and should be converted back to NA using `zeroIsNA` function from `QFeatures`.
+- This is label-free (LFQ) data and processed using MaxQuant not Proteome Discoverer (see [Adapting this workflow to MaxQuant processed data](https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/08_maxquant_notes.html) and [Adapting this workflow to label-free proteomics data](https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/10_lfq_vs_tmt.html))
+- Students should think about appropriate normalisation for LFQ and data missingness.
+- Note NAs have been encoded as zeros in this data and should be converted back to NA using [`zeroIsNA`](https://rformassspectrometry.github.io/QFeatures/reference/QFeatures-missing-data.html#:~:text=zeroIsNA(object%2C%20i)%20replaces,values%20in%20object%20by%20NA%20.
+) function from `QFeatures`.
+- See [Exploration of missing data](https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/03_data_processing.html#exploration-of-missing-data) and [Management of missing data](https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/03_data_processing.html#management-of-missing-data) 
+
