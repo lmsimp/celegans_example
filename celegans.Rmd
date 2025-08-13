@@ -1,0 +1,134 @@
+---
+title: "Untitled"
+author: "Lisa Breckels"
+date: "2025-08-13"
+output: html_document
+---
+
+## Load packages
+```{r}
+library(tidyverse)
+library(readxl)
+library(QFeatures)
+```
+
+## Read in protein level supporting data 
+
+Note: we have cleaned the .xlsx to remove merged columns and cells which create
+extra data wrangling when reading into R. The original and cleaned .xlsx sheets
+are included in this repo.
+
+```{r readdata}
+df <- read_xlsx("pmic12778-sup-0002-table-s1_mod.xlsx")
+```
+
+Before we can create a `QFeatures` object we need to first identify which columns
+the quantitation data is stored in.
+
+```{r}
+df %>% names()
+```
+
+We see it's in 7 - 18.
+
+```{r}
+ind <- grep("L", colnames(df))
+df[ind] %>% names()
+```
+
+Create QF object, let's call this dataset "prots_raw"
+
+```{r}
+qf <- readQFeatures(df, 
+                    quantCols = ind,
+                    name = "prots_raw")
+```
+
+Check the QF object
+
+```{r}
+qf[["prots_raw"]] %>% 
+  assay() %>% 
+  head()
+```
+
+```{r}
+qf[["prots_raw"]] %>% 
+  rowData() %>% 
+  head()
+```
+
+```{r}
+qf[["prots_raw"]] %>%
+  colData()
+```
+
+We see we have 12 rows, one per sample, but no columns yet. We can either read
+in a .csv of metadata or create one directly in R. Recall that this `data.frame`
+should have the same column names as the column names of the `assay` data.
+
+```{r}
+metadata_df <- read.csv("sample_metadata_celegans.csv", row.names = 1)
+metadata_df
+```
+
+Annotate tehe `colData`
+
+```{r}
+colData(qf) <- metadata_df
+qf %>% 
+  colData()
+```
+
+Propgate `colData` to the first SE
+
+```{r}
+colData(qf[["prots_raw"]]) <- colData(qf)
+qf[["prots_raw"]] %>% 
+  colData()
+```
+
+## Data cleaning
+
+We are not given the peptide level data, only the protein level data so can
+not perform some of the cleaning steps carried out earlier in the course.
+
+This data is label free data and has been processed with MaxQuant and not the
+Proteome Discoverer software.  See, 
+
+- "Adapting this workflow to label-free
+proteomics data" https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/10_lfq_vs_tmt.html
+- "Adaping this workflow to MaxQuant processed data" https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/08_maxquant_notes.html
+
+
+### NA's and zeros in MaxQuant data
+
+The main step we must perform is converting the zeros in the data to NA.
+Use the `zeroIsNA` function to do this before doing any exploration, 
+imputation or statistical analysis.
+
+See "Encoding of missing data" in this part of the course.
+https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/03_data_processing.html#exploration-of-missing-data and also
+https://rformassspectrometry.github.io/QFeatures/reference/QFeatures-missing-data.html#:~:text=zeroIsNA(object%2C%20i)%20replaces,values%20in%20object%20by%20NA%20.
+
+
+```{r}
+qf <- zeroIsNA(qf, i = "prots_raw")
+```
+
+```{r}
+nNA(qf, i = "prots_raw")
+```
+
+
+### Management of missing data
+
+Refer to the section https://cambridgecentreforproteomics.github.io/course_expression_proteomics/materials/03_data_processing.html#management-of-missing-data
+in the course materials. See what the authors have done in the paper with
+regards to imputation and missing data.
+
+## Normalisation
+
+## Exploration
+
+## Statistics
