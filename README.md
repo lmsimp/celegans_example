@@ -24,6 +24,8 @@ For example:
 ### Getting started
 - Students can read in the un-normalised protein level data into R using `QFeatures` as they have done in the [earlier course](https://cambridgecentreforproteomics.github.io/course_expression_proteomics/)
 - The peptide data is not available
+- Students can work through the workflow as they would with the PSM/peptide data but just skip data aggregation as this has already been performed.
+- They will still need to do some cleaning, normalisation, management of missing data (possibly imputation), exploration and statistics.
 
 ### Considerations
 - Data is protien level so some of the cleaning steps may not be applicable
